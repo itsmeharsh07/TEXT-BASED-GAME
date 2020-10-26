@@ -1,0 +1,123 @@
+#include <stdio.h>
+
+#include <string.h>
+
+ 
+
+enum room_id { NONE, KITCHEN, HALL, STAIRS };
+
+enum { NORTH, SOUTH, WEST, EAST };
+
+ 
+
+struct room {
+
+    char    *name;
+
+    int      next[4];   // N,S,W,E from this location
+
+    // Things to add here
+
+    // A long description
+
+    // A list of objects ("There is a key here")
+   
+    // A list of Non Player Characters (NPC's)
+
+    // Anything else that may be in each room
+
+} rooms[] = {
+
+    { "None" },
+
+    { "Kitchen",    { NONE,    HALL,   NONE, NONE } },
+
+    { "Hall",       { KITCHEN, STAIRS, NONE, NONE } },
+
+    { "Stairs",     { HALL,    NONE,   NONE, NONE } },
+
+};
+
+ 
+
+int move ( int thisRoom, char *dir ) {
+
+    int direction;
+
+    switch ( *dir ) {
+
+        case 'n': direction = NORTH; break;
+
+        case 's': direction = SOUTH; break;
+
+        case 'w': direction = WEST; break;
+
+        case 'e': direction = EAST; break;
+
+    }
+
+    if ( rooms[thisRoom].next[direction] == NONE ) {
+
+        printf( "The way is blocked!\n" );
+
+    } else {
+
+        thisRoom = rooms[thisRoom].next[direction];
+
+        printf( "You are now in the %s\n", rooms[thisRoom].name );
+
+    }
+
+    return thisRoom;
+
+}
+
+ 
+
+int main ( ) {
+
+    char buff[BUFSIZ];
+
+    int  room = KITCHEN;
+
+ 
+
+    while ( fgets( buff, sizeof buff, stdin ) != NULL ) {
+
+        char    cmd[BUFSIZ];
+
+        int     pos;
+
+        char    *params;
+
+        sscanf( buff, "%s %n", cmd, &pos );
+
+        params = &buff[pos];
+
+        
+
+        if ( strcmp( cmd, "move" ) == 0 ) {
+
+            room = move( room, params );
+
+        } else
+
+        if ( strcmp( cmd, "describe" ) == 0 ) {
+
+            printf( "You are in the %s\n", rooms[room].name );
+
+        }
+
+        if ( strcmp( cmd, "quit" ) == 0 ) {
+
+            break;
+
+        }
+
+    }
+
+ 
+
+    return 0;
+
+}
